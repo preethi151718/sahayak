@@ -1,157 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Program Management</title>
-    <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
     <div class="dashboard-container">
-        <nav class="sidebar">
-            <div class="logo">Admin Panel</div>
-            <ul>
-                <li><a href="/admin/dashboard">Dashboard</a></li>
-                <li><a href="/admin/students">Students</a></li>
-                <li><a href="/admin/educators">Educators</a></li>
-                <li><a href="/admin/programs">Programs</a></li>
-                <li><a href="/logout">Logout</a></li>
-            </ul>
-        </nav>
-        
-        <main class="main-content">
-            <h1>Program Management</h1>
-            
-            <!-- Add Program Form -->
-            <div class="form-container">
-                <h2>Add New Program</h2>
-                <form action="/admin/programs/add" method="POST" id="programForm">
-                    <div class="form-group">
-                        <label for="program_id">Program ID:</label>
-                        <input type="text" id="program_id" name="program_id" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="programName">Program Name:</label>
-                        <input type="text" id="programName" name="programName" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="duration">Duration (months):</label>
-                        <input type="number" id="duration" name="duration" min="1" required onchange="generateAssessments()">
-                    </div>
-                    
-                    <div id="assessments">
-                        <h3>Weekly Assessments</h3>
-                        <div id="weeklyAssessments"></div>
-                        
-                        <h3>Monthly Assessments</h3>
-                        <div id="monthlyAssessments"></div>
-                        
-                        <h3>Quarterly Assessments</h3>
-                        <div id="quarterlyAssessments"></div>
-                    </div>
-                    
-                    <button type="submit">Add Program</button>
-                </form>
+      <nav class="sidebar">
+        <div class="logo">Admin Panel</div>
+        <ul>
+          <li><a href="/admin/dashboard">Dashboard</a></li>
+          <li><a href="/admin/students">Students</a></li>
+          <li><a href="/admin/educators">Educators</a></li>
+          <li><a href="/admin/programs">Programs</a></li>
+          <li><a href="/logout">Logout</a></li>
+        </ul>
+      </nav>
+
+      <main class="main-content">
+        <h1>Program Management</h1>
+
+        <!-- Add Program Form -->
+        <div class="form-container">
+          <h2>Add New Program</h2>
+          <form action="/admin/programs/add" method="POST" id="programForm">
+            <div class="form-group">
+              <label for="program_id">Program ID:</label>
+              <input type="text" id="program_id" name="program_id" required />
             </div>
 
-            <!-- Program List -->
-            <div class="programs-table">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Program ID</th>
-                            <th>Name</th>
-                            <th>Duration</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% programs.forEach(program => { %>
-                            <tr>
-                                <td><%= program.program_id %></td>
-                                <td><%= program.programName %></td>
-                                <td><%= program.duration %> months</td>
-                                <td>
-                                    <button onclick="viewProgram('<%= program._id %>')">View</button>
-                                    <button onclick="editProgram('<%= program._id %>')">Edit</button>
-                                    <button onclick="deleteProgram('<%= program._id %>')" class="delete-btn">Delete</button>
-                                </td>
-                            </tr>
-                        <% }) %>
-                    </tbody>
-                </table>
+            <div class="form-group">
+              <label for="programName">Program Name:</label>
+              <input type="text" id="programName" name="programName" required />
             </div>
-        </main>
+
+            <div class="form-group">
+              <label for="duration">Duration (months):</label>
+              <input
+                type="number"
+                id="duration"
+                name="duration"
+                min="1"
+                required
+                onchange="generateAssessments()"
+              />
+            </div>
+
+            <div id="assessments">
+              <h3>Weekly Assessments</h3>
+              <div id="weeklyAssessments"></div>
+
+              <h3>Monthly Assessments</h3>
+              <div id="monthlyAssessments"></div>
+
+              <h3>Quarterly Assessments</h3>
+              <div id="quarterlyAssessments"></div>
+            </div>
+
+            <button type="submit">Add Program</button>
+          </form>
+        </div>
+
+        <!-- Program List -->
+        <div class="programs-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Program ID</th>
+                <th>Name</th>
+                <th>Duration</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% programs.forEach(program => { %>
+              <tr>
+                <td><%= program.program_id %></td>
+                <td><%= program.programName %></td>
+                <td><%= program.duration %> months</td>
+                <td>
+                  <button onclick="viewProgram('<%= program._id %>')">
+                    View
+                  </button>
+                  <button onclick="editProgram('<%= program._id %>')">
+                    Edit
+                  </button>
+                  <button
+                    onclick="deleteProgram('<%= program._id %>')"
+                    class="delete-btn"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </main>
     </div>
 
     <script>
-        function generateAssessments() {
-            const duration = parseInt(document.getElementById('duration').value);
-            const weeks = duration * 4;
-            const months = duration;
-            const quarters = Math.ceil(duration / 3);
-            
-            // Generate weekly assessments
-            const weeklyContainer = document.getElementById('weeklyAssessments');
-            weeklyContainer.innerHTML = '';
-            for(let i = 1; i <= weeks; i++) {
-                weeklyContainer.innerHTML += `
+      function generateAssessments() {
+        const duration = parseInt(document.getElementById("duration").value);
+        const weeks = duration * 4;
+        const months = duration;
+        const quarters = Math.ceil(duration / 3);
+
+        // Generate weekly assessments
+        const weeklyContainer = document.getElementById("weeklyAssessments");
+        weeklyContainer.innerHTML = "";
+        for (let i = 1; i <= weeks; i++) {
+          weeklyContainer.innerHTML += `
                     <div class="form-group">
                         <label for="week${i}">Week ${i}:</label>
-                        <input type="text" name="weekly[${i-1}][week]" value="${i}" hidden>
-                        <input type="text" name="weekly[${i-1}][name]" placeholder="Assessment name" required>
+                        <input type="text" name="weekly[${
+                          i - 1
+                        }][week]" value="${i}" hidden>
+                        <input type="text" name="weekly[${
+                          i - 1
+                        }][name]" placeholder="Assessment name" required>
                     </div>
                 `;
-            }
-            
-            // Generate monthly assessments
-            const monthlyContainer = document.getElementById('monthlyAssessments');
-            monthlyContainer.innerHTML = '';
-            for(let i = 1; i <= months; i++) {
-                monthlyContainer.innerHTML += `
+        }
+
+        // Generate monthly assessments
+        const monthlyContainer = document.getElementById("monthlyAssessments");
+        monthlyContainer.innerHTML = "";
+        for (let i = 1; i <= months; i++) {
+          monthlyContainer.innerHTML += `
                     <div class="form-group">
                         <label for="month${i}">Month ${i}:</label>
-                        <input type="text" name="monthly[${i-1}][month]" value="Month ${i}" hidden>
-                        <input type="text" name="monthly[${i-1}][name]" placeholder="Assessment name" required>
+                        <input type="text" name="monthly[${
+                          i - 1
+                        }][month]" value="Month ${i}" hidden>
+                        <input type="text" name="monthly[${
+                          i - 1
+                        }][name]" placeholder="Assessment name" required>
                     </div>
                 `;
-            }
-            
-            // Generate quarterly assessments
-            const quarterlyContainer = document.getElementById('quarterlyAssessments');
-            quarterlyContainer.innerHTML = '';
-            for(let i = 1; i <= quarters; i++) {
-                quarterlyContainer.innerHTML += `
+        }
+
+        // Generate quarterly assessments
+        const quarterlyContainer = document.getElementById(
+          "quarterlyAssessments"
+        );
+        quarterlyContainer.innerHTML = "";
+        for (let i = 1; i <= quarters; i++) {
+          quarterlyContainer.innerHTML += `
                     <div class="form-group">
                         <label for="quarter${i}">Quarter ${i}:</label>
-                        <input type="text" name="quarterly[${i-1}][quarter]" value="Q${i}" hidden>
-                        <input type="text" name="quarterly[${i-1}][name]" placeholder="Assessment name" required>
+                        <input type="text" name="quarterly[${
+                          i - 1
+                        }][quarter]" value="Q${i}" hidden>
+                        <input type="text" name="quarterly[${
+                          i - 1
+                        }][name]" placeholder="Assessment name" required>
                     </div>
                 `;
-            }
         }
+      }
 
-        function viewProgram(id) {
-            window.location.href = `/admin/programs/${id}`;
-        }
+      function viewProgram(id) {
+        window.location.href = `/admin/programs/view/${id}`;
+      }
 
-        function editProgram(id) {
-            window.location.href = `/admin/programs/edit/${id}`;
-        }
+      function editProgram(id) {
+        window.location.href = `/admin/programs/edit/${id}`;
+      }
 
-        function deleteProgram(id) {
-            if(confirm('Are you sure you want to delete this program?')) {
-                fetch(`/admin/programs/delete/${id}`, { method: 'DELETE' })
-                    .then(response => response.json())
-                    .then(result => {
-                        if(result.success) {
-                            location.reload();
-                        }
-                    });
-            }
+      function deleteProgram(id) {
+        if (confirm("Are you sure you want to delete this program?")) {
+          fetch(`/admin/programs/delete/${id}`, { method: "DELETE" })
+            .then((response) => response.json())
+            .then((result) => {
+              if (result.success) {
+                location.reload();
+              }
+            });
         }
+      }
     </script>
-</body>
+  </body>
 </html>

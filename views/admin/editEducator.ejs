@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Educator</title>
+  </head>
+  <body>
+    <h1>Edit Educator</h1>
+    <form action="/admin/educators/update/<%= educator._id %>" method="POST">
+      <label for="name">Name:</label>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        value="<%= educator.name %>"
+        required
+      />
+
+      <label for="email">Email:</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        value="<%= educator.email %>"
+        required
+      />
+
+      <label for="phoneNo">Phone:</label>
+      <input
+        type="text"
+        id="phoneNo"
+        name="phoneNo"
+        value="<%= educator.phoneNo %>"
+        required
+      />
+
+      <label for="experienceYears">Experience (Years):</label>
+      <input
+        type="number"
+        id="experienceYears"
+        name="experienceYears"
+        value="<%= educator.experienceYears %>"
+        required
+      />
+
+      <label for="bio">Bio:</label>
+      <textarea id="bio" name="bio"><%= educator.bio %></textarea>
+
+      <label for="qualifications">Qualifications:</label>
+      <textarea id="qualifications" name="qualifications">
+<%= educator.qualifications %></textarea
+      >
+
+      <label for="profileImage">Profile Image URL:</label>
+      <input
+        type="text"
+        id="profileImage"
+        name="profileImage"
+        value="<%= educator.profileImage %>"
+      />
+
+      <% if (educator.profileImage) { %>
+      <img
+        src="<%= educator.profileImage %>"
+        alt="Educator Image"
+        width="150px"
+      />
+      <% } %>
+
+      <h3>Programs</h3>
+      <% programs.forEach(program => { %>
+      <label>
+        <input type="checkbox" name="programs" value="<%= program._id %>" <%=
+        educator.programs.some(p => p._id.toString() === program._id.toString())
+        ? 'checked' : '' %> /> <%= program.programName %>
+      </label>
+      <% }) %>
+
+      <button type="submit">Update Educator</button>
+    </form>
+
+    <a href="/admin/educators">Back to Educators</a>
+  </body>
+</html>

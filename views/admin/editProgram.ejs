@@ -1,0 +1,103 @@
+<!-- editProgram.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Program</title>
+  </head>
+  <body>
+    <h1>Edit Program</h1>
+    <form action="/admin/programs/update/<%= program._id %>" method="POST">
+      <label>Program ID:</label>
+      <input
+        type="text"
+        name="program_id"
+        value="<%= program.program_id %>"
+        required
+      />
+
+      <label>Program Name:</label>
+      <input
+        type="text"
+        name="programName"
+        value="<%= program.programName %>"
+        required
+      />
+
+      <label>Duration (months):</label>
+      <input
+        type="number"
+        name="duration"
+        value="<%= program.duration %>"
+        required
+      />
+
+      <h3>Weekly Assessments</h3>
+      <div id="weeklyAssessments">
+        <% program.weekly.forEach((week, index) => { %>
+        <div>
+          <label>Week <%= week.week %>:</label>
+          <input
+            type="text"
+            name="weekly[<%= index %>][week]"
+            value="<%= week.week %>"
+            hidden
+          />
+          <input
+            type="text"
+            name="weekly[<%= index %>][name]"
+            value="<%= week.name %>"
+            required
+          />
+        </div>
+        <% }) %>
+      </div>
+
+      <h3>Monthly Assessments</h3>
+      <div id="monthlyAssessments">
+        <% program.monthly.forEach((month, index) => { %>
+        <div>
+          <label><%= month.month %>:</label>
+          <input
+            type="text"
+            name="monthly[<%= index %>][month]"
+            value="<%= month.month %>"
+            hidden
+          />
+          <input
+            type="text"
+            name="monthly[<%= index %>][name]"
+            value="<%= month.name %>"
+            required
+          />
+        </div>
+        <% }) %>
+      </div>
+
+      <h3>Quarterly Assessments</h3>
+      <div id="quarterlyAssessments">
+        <% program.quarterly.forEach((quarter, index) => { %>
+        <div>
+          <label><%= quarter.quarter %>:</label>
+          <input
+            type="text"
+            name="quarterly[<%= index %>][quarter]"
+            value="<%= quarter.quarter %>"
+            hidden
+          />
+          <input
+            type="text"
+            name="quarterly[<%= index %>][name]"
+            value="<%= quarter.name %>"
+            required
+          />
+        </div>
+        <% }) %>
+      </div>
+
+      <button type="submit">Update Program</button>
+    </form>
+    <a href="/admin/programs">Back to Programs</a>
+  </body>
+</html>

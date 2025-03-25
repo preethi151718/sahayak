@@ -1,0 +1,45 @@
+<!-- viewProgram.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Program</title>
+  </head>
+  <body>
+    <h1>Program Details</h1>
+    <p><strong>Program ID:</strong> <%= program.program_id %></p>
+    <p><strong>Name:</strong> <%= program.programName %></p>
+    <p><strong>Duration:</strong> <%= program.duration %> months</p>
+
+    <h3>Weekly Assessments</h3>
+    <ul>
+      <% program.weekly.forEach(week => { %>
+      <li>Week <%= week.week %>: <%= week.name %></li>
+      <% }) %>
+    </ul>
+
+    <h3>Monthly Assessments</h3>
+    <ul>
+      <% program.monthly.forEach(month => { %>
+      <li><%= month.month %>: <%= month.name %></li>
+      <% }) %>
+    </ul>
+
+    <h3>Quarterly Assessments</h3>
+    <ul>
+      <% program.quarterly.forEach(quarter => { %>
+      <li><%= quarter.quarter %>: <%= quarter.name %></li>
+      <% }) %>
+    </ul>
+
+    <a href="/admin/programs/edit/<%= program._id %>">Edit</a>
+    <form
+      action="/admin/programs/delete/<%= program._id %>"
+      method="POST"
+      onsubmit="return confirm('Are you sure?');"
+    >
+      <button type="submit">Delete</button>
+    </form>
+  </body>
+</html>

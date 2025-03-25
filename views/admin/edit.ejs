@@ -17,6 +17,13 @@
 
                 <label>Name:</label>
                 <input type="text" name="name" value="<%= student.name %>" required>
+                <label>Profile Picture URL:</label>
+<% if (student.profileImage) { %>
+    <div>
+        <img src="<%= student.profileImage %>" alt="Profile Image" width="100">
+    </div>
+<% } %>
+<input type="url" name="profileImage" value="<%= student.profileImage %>" placeholder="Enter image URL">
 
                 <label>Status:</label>
                 <select name="status">

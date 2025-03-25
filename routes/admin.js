@@ -150,26 +150,57 @@ router.delete("/educators/delete/:id", async (req, res) => {
   }
 });
 
-// View Student Details
-router.get("/admin/students/:id", async (req, res) => {
+router.get("/students/:id", async (req, res) => {
   const student = await Student.findById(req.params.id).populate(
     "programId educator secondaryEducator"
   );
-  res.render("view", { student });
+  res.render("admin/view", { student });
 });
 
 // Edit Student Page
-router.get("/admin/students/edit/:id", async (req, res) => {
+router.get("/students/edit/:id", async (req, res) => {
   const student = await Student.findById(req.params.id);
   const programs = await Program.find();
   const educators = await Educator.find();
-  res.render("edit", { student, programs, educators });
+  res.render("admin/edit", { student, programs, educators });
 });
 
-// Update Student
-router.post("/admin/students/update/:id", async (req, res) => {
-  await Student.findByIdAndUpdate(req.params.id, req.body);
-  res.redirect("/admin/students");
+router.post("/students/update/:id", async (req, res) => {
+  try {
+    const studentId = req.params.id;
+
+    // Convert checkboxes to an array
+    if (!Array.isArray(req.body.daysOfWeek)) {
+      req.body.daysOfWeek = req.body.daysOfWeek ? [req.body.daysOfWeek] : [];
+    }
+
+    // Update the student
+    await Student.findByIdAndUpdate(studentId, {
+      studentId: req.body.studentId,
+      name: req.body.name,
+      profileImage: req.body.profileImage, // ✅ Ensure profile image is saved
+      status: req.body.status,
+      programId: req.body.programId,
+      daysOfWeek: req.body.daysOfWeek, // ✅ Ensures array is saved properly
+      educator: req.body.educator,
+      secondaryEducator: req.body.secondaryEducator || null,
+      sessionType: req.body.sessionType,
+      fatherName: req.body.fatherName,
+      motherName: req.body.motherName,
+      contactNo: req.body.contactNo,
+      alternativeContactNo: req.body.alternativeContactNo,
+      parentEmail: req.body.parentEmail,
+      address: req.body.address,
+      transport: req.body.transport,
+      comments: req.body.comments,
+      enrollmentYear: req.body.enrollmentYear,
+    });
+
+    res.redirect(`/admin/students`);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error updating student");
+  }
 });
 
 router.delete("/programs/delete/:id", async (req, res) => {
@@ -178,6 +209,80 @@ router.delete("/programs/delete/:id", async (req, res) => {
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ success: false });
+  }
+});
+
+// View Educator Details
+router.get("/educators/:id", async (req, res) => {
+  try {
+    const educator = await Educator.findById(req.params.id).populate(
+      "programs"
+    );
+    res.render("admin/viewEducator", { educator });
+  } catch (error) {
+    res.status(500).send("Error fetching educator details");
+  }
+});
+
+// Edit Educator Page
+router.get("/educators/edit/:id", async (req, res) => {
+  try {
+    const educator = await Educator.findById(req.params.id);
+    const programs = await Program.find();
+    if (!educator) {
+      return res.status(404).send("Educator not found");
+    }
+    res.render("admin/editEducator", { educator, programs });
+  } catch (error) {
+    res.status(500).send("Error fetching educator details");
+  }
+});
+
+// Update Educator
+router.post("/educators/update/:id", async (req, res) => {
+  try {
+    await Educator.findByIdAndUpdate(req.params.id, {
+      name: req.body.name,
+      email: req.body.email,
+      phoneNo: req.body.phoneNo,
+      experienceYears: req.body.experienceYears,
+      bio: req.body.bio,
+      qualifications: req.body.qualifications,
+      profileImage: req.body.profileImage,
+      programs: req.body.programs || [], // Ensure it's always an array
+    });
+    res.redirect("/admin/educators");
+  } catch (error) {
+    res.status(500).send("Error updating educator");
+  }
+});
+// View a program
+router.get("/programs/view/:id", async (req, res) => {
+  try {
+    const program = await Program.findById(req.params.id);
+    res.render("admin/viewProgram", { program });
+  } catch (error) {
+    res.status(500).send("Error retrieving program");
+  }
+});
+
+// Edit a program (GET form)
+router.get("/programs/edit/:id", async (req, res) => {
+  try {
+    const program = await Program.findById(req.params.id);
+    res.render("admin/editProgram", { program });
+  } catch (error) {
+    res.status(500).send("Error retrieving program for editing");
+  }
+});
+
+// Update a program (POST)
+router.post("/programs/update/:id", async (req, res) => {
+  try {
+    await Program.findByIdAndUpdate(req.params.id, req.body);
+    res.redirect("/admin/programs/view/" + req.params.id);
+  } catch (error) {
+    res.status(500).send("Error updating program");
   }
 });
 
