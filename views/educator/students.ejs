@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Students List</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <nav class="sidebar">
+        <div class="logo">Educator Panel</div>
+        <ul>
+          <li><a href="/educator/dashboard">Programs</a></li>
+          <li><a href="/logout">Logout</a></li>
+        </ul>
+      </nav>
+
+      <main class="main-content">
+        <h1>Students</h1>
+        <div class="students-list">
+          <% students.forEach(student => { %>
+          <div class="student-card">
+            <h3><%= student.name %></h3>
+            <p>Student ID: <%= student.studentId %></p>
+            <form action="/educator/assessment/add" method="POST">
+              <input
+                type="hidden"
+                name="studentId"
+                value="<%= student._id %>"
+              />
+
+              <div class="form-group">
+                <label for="type">Assessment Type:</label>
+                <select name="type" class="type-select" required>
+                  <option value="">Select Assessment Type</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="quarterly">Quarterly</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="programId">Select Program:</label>
+                <select
+                  name="programId"
+                  class="program-select"
+                  required
+                  disabled
+                >
+                  <option value="">Select Assessment Type First</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="assessmentName">Assessment Name:</label>
+                <select
+                  name="assessmentName"
+                  class="assessment-name-select"
+                  required
+                  disabled
+                >
+                  <option value="">Select Program First</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="score">Score (0-5):</label>
+                <input type="number" name="score" min="0" max="5" required />
+              </div>
+
+              <div class="form-group">
+                <label for="comments">Comments:</label>
+                <textarea name="comments"></textarea>
+              </div>
+
+              <button type="submit">Add Assessment</button>
+            </form>
+          </div>
+          <% }) %>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const programs = <%- JSON.stringify(programs) %>;
+        const typeSelects = document.querySelectorAll(".type-select");
+        const programSelects = document.querySelectorAll(".program-select");
+        const assessmentNameSelects = document.querySelectorAll(".assessment-name-select");
+
+        typeSelects.forEach((typeSelect, index) => {
+          typeSelect.addEventListener("change", function () {
+            const selectedType = this.value;
+            const programSelect = programSelects[index];
+            const assessmentNameSelect = assessmentNameSelects[index];
+
+            // Reset and enable program select
+            programSelect.innerHTML = "<option value=''>Select a Program</option>";
+            programSelect.disabled = false;
+
+            // Reset and disable assessment name select
+            assessmentNameSelect.innerHTML = "<option value=''>Select Program First</option>";
+            assessmentNameSelect.disabled = true;
+
+            // Filter and populate programs based on assessment type
+            programs.forEach(program => {
+              let assessmentsToShow = [];
+              switch(selectedType) {
+                case 'weekly':
+                  assessmentsToShow = program.weekly || [];
+                  break;
+                case 'monthly':
+                  assessmentsToShow = program.monthly || [];
+                  break;
+                case 'quarterly':
+                  assessmentsToShow = program.quarterly || [];
+                  break;
+              }
+
+              if (assessmentsToShow.length > 0) {
+                const option = document.createElement("option");
+                option.value = program._id;
+                option.textContent = program.programName;
+                programSelect.appendChild(option);
+              }
+            });
+          });
+
+          // Add event listener for program select
+          const programSelect = programSelects[index];
+          const assessmentNameSelect = assessmentNameSelects[index];
+
+          programSelect.addEventListener("change", function () {
+            const selectedProgramId = this.value;
+            const selectedType = typeSelects[index].value;
+
+            // Reset and enable assessment name select
+            assessmentNameSelect.innerHTML = "<option value=''>Select Assessment</option>";
+            assessmentNameSelect.disabled = false;
+
+            // Find the selected program
+            const selectedProgram = programs.find(p => p._id === selectedProgramId);
+
+            if (selectedProgram) {
+              let assessmentsToShow = [];
+              switch(selectedType) {
+                case 'weekly':
+                  assessmentsToShow = selectedProgram.weekly || [];
+                  break;
+                case 'monthly':
+                  assessmentsToShow = selectedProgram.monthly || [];
+                  break;
+                case 'quarterly':
+                  assessmentsToShow = selectedProgram.quarterly || [];
+                  break;
+              }
+
+              // Populate assessment names
+              assessmentsToShow.forEach(assessment => {
+                const option = document.createElement("option");
+                option.value = assessment.name;
+                option.textContent = assessment.name;
+                assessmentNameSelect.appendChild(option);
+              });
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

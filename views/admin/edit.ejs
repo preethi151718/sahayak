@@ -1,0 +1,98 @@
+<!-- views/edit.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Student</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <main class="main-content">
+            <h1>Edit Student</h1>
+            <form action="/admin/students/update/<%= student._id %>" method="POST">
+                <label>Student ID:</label>
+                <input type="number" name="studentId" value="<%= student.studentId %>" required>
+
+                <label>Name:</label>
+                <input type="text" name="name" value="<%= student.name %>" required>
+
+                <label>Status:</label>
+                <select name="status">
+                    <option value="active" <%= student.status === "active" ? "selected" : "" %>>Active</option>
+                    <option value="inactive" <%= student.status === "inactive" ? "selected" : "" %>>Inactive</option>
+                </select>
+
+                <label>Program:</label>
+                <select name="programId" required>
+                    <% programs.forEach(program => { %>
+                        <option value="<%= program._id %>" <%= student.programId._id === program._id ? "selected" : "" %>><%= program.programName %></option>
+                    <% }) %>
+                </select>
+
+                <label>Days of Week:</label>
+                <% ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].forEach(day => { %>
+                    <label>
+                        <input type="checkbox" name="daysOfWeek" value="<%= day %>" <%= student.daysOfWeek.includes(day) ? "checked" : "" %>> <%= day %>
+                    </label>
+                <% }) %>
+
+                <label>Primary Educator:</label>
+                <select name="educator" required>
+                    <% educators.forEach(educator => { %>
+                        <option value="<%= educator._id %>" <%= student.educator._id === educator._id ? "selected" : "" %>><%= educator.name %></option>
+                    <% }) %>
+                </select>
+
+                <label>Secondary Educator:</label>
+                <select name="secondaryEducator">
+                    <option value="">None</option>
+                    <% educators.forEach(educator => { %>
+                        <option value="<%= educator._id %>" <%= student.secondaryEducator && student.secondaryEducator._id === educator._id ? "selected" : "" %>><%= educator.name %></option>
+                    <% }) %>
+                </select>
+
+                <label>Session Type:</label>
+                <select name="sessionType">
+                    <option value="online" <%= student.sessionType === "online" ? "selected" : "" %>>Online</option>
+                    <option value="offline" <%= student.sessionType === "offline" ? "selected" : "" %>>Offline</option>
+                </select>
+
+                <label>Father's Name:</label>
+                <input type="text" name="fatherName" value="<%= student.fatherName %>">
+
+                <label>Mother's Name:</label>
+                <input type="text" name="motherName" value="<%= student.motherName %>">
+
+                <label>Contact Number:</label>
+                <input type="tel" name="contactNo" value="<%= student.contactNo %>" required>
+
+                <label>Alternative Contact:</label>
+                <input type="tel" name="alternativeContactNo" value="<%= student.alternativeContactNo %>">
+
+                <label>Parent's Email:</label>
+                <input type="email" name="parentEmail" value="<%= student.parentEmail %>">
+
+                <label>Address:</label>
+                <textarea name="address"><%= student.address %></textarea>
+
+                <label>Transport:</label>
+                <input type="text" name="transport" value="<%= student.transport %>">
+
+                <label>Comments:</label>
+                <textarea name="comments"><%= student.comments %></textarea>
+
+                <label>Enrollment Year:</label>
+                <select name="enrollmentYear" required>
+                    <% for(let i = 2020; i <= new Date().getFullYear(); i++) { %>
+                        <option value="<%= i %>" <%= student.enrollmentYear == i ? "selected" : "" %>><%= i %></option>
+                    <% } %>
+                </select>
+
+                <button type="submit">Update Student</button>
+            </form>
+        </main>
+    </div>
+</body>
+</html>

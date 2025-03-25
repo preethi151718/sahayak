@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <div class="logo">Admin Panel</div>
+            <ul>
+                <li><a href="/admin/students">Students</a></li>
+                <li><a href="/admin/educators">Educators</a></li>
+                <li><a href="/admin/programs">Programs</a></li>
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </nav>
+        
+        <main class="main-content">
+            <h1>Dashboard</h1>
+            <div class="stats-container">
+                <div class="stat-card">
+                    <h3>Total Students</h3>
+                    <p><%= totalStudents %></p>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Educators</h3>
+                    <p><%= totalEducators %></p>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Programs</h3>
+                    <p><%= totalPrograms %></p>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

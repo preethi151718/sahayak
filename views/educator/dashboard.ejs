@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Educator Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <nav class="sidebar">
+        <div class="logo">Educator Panel</div>
+        <ul>
+          <li>
+            <a href="/educator/<%= educator._id %>/dashboard">Programs</a>
+          </li>
+          <li><a href="/logout">Logout</a></li>
+        </ul>
+      </nav>
+
+      <main class="main-content">
+        <h1>Programs</h1>
+        <div class="programs-container">
+          <% programs.forEach(program => { %>
+          <div class="program-card">
+            <h3><%= program.programName %></h3>
+            <form action="/educator/students" method="GET">
+              <input
+                type="hidden"
+                name="educatorId"
+                value="<%= educator._id %>"
+              />
+              <input
+                type="hidden"
+                name="programId"
+                value="<%= program._id %>"
+              />
+              <div class="form-group">
+                <label for="year">Select Year:</label>
+                <select name="year" id="year" required>
+                  <% for(let i = 2020; i <= new Date().getFullYear(); i++) { %>
+                  <option value="<%= i %>"><%= i %></option>
+                  <% } %>
+                </select>
+              </div>
+              <button type="submit">View Students</button>
+            </form>
+          </div>
+          <% }) %>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educator Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <div class="logo">Educator Panel</div>
+            <ul>
+                <li><a href="/educator/<%= educator._id %>/dashboard">Programs</a></li>
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </nav>
+        
+        <main class="main-content">
+            <h1>Programs</h1>
+            <div class="programs-container">
+                <% programs.forEach(program => { %>
+                    <div class="program-card">
+                        <h3><%= program.programName %></h3>
+                        <form action="/educator/students" method="GET">
+                            <input type="hidden" name="educatorId" value="<%= educator._id %>">
+                            <input type="hidden" name="programId" value="<%= program._id %>">
+                            <div class="form-group">
+                                <label for="year">Select Year:</label>
+                                <select name="year" id="year" required>
+                                    <% for(let i = 2020; i <= new Date().getFullYear(); i++) { %>
+                                        <option value="<%= i %>"><%= i %></option>
+                                    <% } %>
+                                </select>
+                            </div>
+                            <button type="submit">View Students</button>
+                        </form>
+                    </div>
+                <% }) %>
+            </div>
+        </main>
+    </div>
+</body>
+</html> -->
